@@ -1,0 +1,6 @@
+* set maxConnections to 5 or so 
+to prevent errors and retries
+* use a server iso console.log for communication in phantomscript.
+   http://stackoverflow.com/questions/20751999/phantomjs-interprocess-communication
+   https://github.com/ariya/phantomjs/wiki/API-Reference-WebServer
+   http://phantomjs.org/api/webpage/handler/on-load-finished.html

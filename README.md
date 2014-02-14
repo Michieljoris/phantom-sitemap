@@ -8,6 +8,7 @@ If a url has a hashbang (#!) or the page contains the fragment meta tag, the htm
 
 	var options =
 		{ maxDepth: 1,
+		  maxConnections: 5,
 		  maxFollow: 0,
 		  verbose: false,
 		  silent: false,
@@ -33,3 +34,7 @@ Set options.sitemap to false to return just a list of links.
 			console.log('ERROR', err);
 		}
 	)
+	
+Using node-crawler to crawl static pages.	
+
+

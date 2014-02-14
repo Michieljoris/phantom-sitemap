@@ -1,7 +1,7 @@
 {
   "name": "phantom-sitemap",
   "description": "Crawls a site, extracts the links and returns the promise of either a sitemap or just a list of links.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/michieljoris/phantom-sitemap",
   "keywords": [
     "seo",

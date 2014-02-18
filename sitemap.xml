@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url> <loc>http://www.firstdoor.com.au</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://www.firstdoor.com.au/#</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://www.firstdoor.com.au/#!/home#welcome</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://www.firstdoor.com.au/#!/home#specialists</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://www.firstdoor.com.au/#!/home#engaging</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -43,4 +43,15 @@
 <url> <loc>http://www.firstdoor.com.au/documents/Diploma_Early_Childhood_Course_Guide.pdf</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://www.firstdoor.com.au/documents/Dip%20ECEC%20enrolment%20print%20version.pdf</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://www.firstdoor.com.au/documents/Individual%20Units%20enrolment%20print%20version.pdf</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/__b5c565342f/sitemap.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/#</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/#!/pd?page=intro</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/#!/courses</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/documents/ASQA_Audit_Report.pdf</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/documents/Respectful_relationships_workshop_invitation.pdf</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/#!/courses#priorlearning</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/#!/courses#trainingplans</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/#!/courses#studentfees</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/documents/Dip%20ECEC%20enrolment%20electronic%20version.docx</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://www.firstdoor.com.au/documents/Individual%20Units%20enrolment%20electronic%20version.docx</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 </urlset>

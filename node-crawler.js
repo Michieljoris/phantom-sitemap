@@ -327,7 +327,6 @@ exports.Crawler = function(options) {
             }
 
         } else {
-
             toQueue.callback(null,response);
             release(toQueue);
         }
@@ -383,9 +382,9 @@ exports.Crawler = function(options) {
             //Static HTML was given, skip request
             if (toQueue.html) {
                 if (typeof toQueue.html==="function") {
-                    toQueue.html(toQueue.uri, function(html) {
-                        if (html)
-                            self.onContent(null,toQueue,{body:html},false);
+                    toQueue.html(toQueue.uri, function(result) {
+                        if (result)
+                            self.onContent(null,toQueue, result, false);
                         else self.onContent('No html received',toQueue,null,false);
                     });
                 } 

@@ -42,8 +42,8 @@ Path = require('path')
 //TODO update wash.js in repo
 
 
-var defaultOptions = { maxDepth: 1,
-                           maxFollow: 0,
+var defaultOptions = { maxDepth: 5,
+                       maxFollow: 0,
                        verbose: false,
                        silent: false,
                        //timeout for a request:
@@ -55,6 +55,7 @@ var defaultOptions = { maxDepth: 1,
                        include: ['pdf', 'doc', 'docx'],
                        cacheDir: './cache',
                        sitemap: true,
+                       html: true,
                        out: 'sitemap.xml',
                        replaceHost: 'www.example.com'
                      };
@@ -64,6 +65,8 @@ function getCrawler(options) {
     var followed;
     var dynamic;
     var host;
+    var files;
+    var text;
 
         // var log = [];
     function debug() {
@@ -112,21 +115,26 @@ function getCrawler(options) {
 
     function extractLinks(result,$) {
         if (result.uri) debug('Parsing ',  result.uri);
+        else debug('Parsing washed: ', result.options.uri);
         var links = [];
-        if (result.body.links) {
-            links = result.body.links;
+        // debug(Object.keys(result.body));
+        if (result.links) {
+            links = result.links;
+            links.forEach(function(l) {
+                text[l.href] = l.text;
+            });
         }
-            else if (result.headers && result.headers['content-type'] === 'text/html' && $) {
-                $("a").each(function(index,a) {
-                    links.push(a.href);
-                });
-            }
+        else if (result.headers && result.headers['content-type'] === 'text/html' && $) {
+            $("a").each(function(index,a) {
+                links.push(a.href);
+                text[a.href] = $(a).text();
+            });
+        }
         return links;
     }
 
     function maxFollowed(vow) {
-        if (options.maxFollow && followed.length >= options.maxFollow) {
-            debug('maxFollow reached');
+        if (options.maxFollow && Object.keys(followed).length >= options.maxFollow) {
             if (vow.status() === 'pending') vow.keep();
             return true;
         }
@@ -138,10 +146,11 @@ function getCrawler(options) {
     }
 
     function getHtml(url, cb) {
-        console.log('washing ' + url);
+        debug('washing ' + url);
         wash(url).when(
             function(result) { //html, headers and links
                 fs.outputJsonSync(Path.resolve(__dirname, options.cacheDir, md5(url)), { val: result.html } );
+                result.body = result.html;
                 cb(result);
             }
             ,function(err) {
@@ -168,18 +177,20 @@ function getCrawler(options) {
                 }
                 if (maxFollowed(vow)) return;
                 var links = extractLinks(result, $);
+                
                 links.forEach(function(link) {
-                    // debug('link', link);
-                    var url = Url.parse(link);
+                    var href = link.href || link;
+                    var url = Url.parse(href);
                     var ext = Path.extname(url.pathname).slice(1);
                     var method;
-                    if (options.include.indexOf(ext) !== -1) {
+                    if (options.include.indexOf(ext) !== -1 && !files[url.pathname]) {
+                        files[url.pathname] = true;
                         debug('Found included file:', url.pathname);
                         method = 'ignore';
                     } 
                     else method = url.hash && url.hash.indexOf('#!') === 0 ?
                         'phantom' :'crawl';
-                    fetch(method, link, result.options.depth + 1);
+                    fetch(method, href, result.options.depth + 1);
                 });
             }
             ,onDrain: function() {
@@ -207,21 +218,25 @@ function getCrawler(options) {
         return vow.promise;
     }
 
-    function respond(vow) {
+    function respond(vow, seed) {
         // debug('followed:', followed);
-        if (!options.sitemap)
-            vow.keep({ followed: Object.keys(followed), phantomed: dynamic });
-        else {
-            var sitemap = {
-                hostname: host,
-                urls: []};
-            Object.keys(followed).forEach(function(l) {
-                sitemap.urls.push( { url: l, changefreq: options.changefreq });
-            });
-
-            sitemap = sm.createSitemap(sitemap).toString();
-            vow.keep(sitemap);
-        }
+        var sitemap = {
+            hostname: host,
+            urls: []};
+        var html = '';
+        
+        Object.keys(followed).forEach(function(l) {
+            var linkText = text[l] || 'notext';
+            if (options.replaceHost) {
+                var re = new RegExp(seed, 'g');
+                l = l.replace(re, options.replaceHost);
+            }
+            sitemap.urls.push( { url: l, changefreq: options.changefreq });
+            if (linkText) html += '  <li><a href="' + l  + '">' + linkText + '</a></li>\n';
+        });
+        html = ['<ul>\n', html, '</ul>'].join('');
+        sitemap = sm.createSitemap(sitemap).toString();
+        vow.keep({ sitemap: sitemap, html: html, list: Object.keys(followed), phantomed: dynamic });
     }
 
     function getData(seed) {
@@ -232,6 +247,8 @@ function getCrawler(options) {
             var seeds = [];
         followed = {};
         dynamic = [];
+        files = {};
+        text = {};
         debug(options);
         host = Url.parse(seed || '').host;
         if (!host) vow.breek('No seed passed in.');
@@ -249,7 +266,7 @@ function getCrawler(options) {
                                 recur
                             );
                         }
-                        else respond(vow, host);
+                        else respond(vow, seed);
                     }
 
                     recur();
@@ -264,17 +281,16 @@ function getCrawler(options) {
         var vow = VOW.make();
         getData(seed).when(
             function(data) {
-                if (options.replaceHost) {
-                    var re = new RegExp(seed, 'g');
-                    data = data.replace(re, options.replaceHost);
-                }
                 if (!options.out) {
                     vow.keep(data);
                     return;
                 }
-                fs.outputFile(options.out, data, function(err) {
+                fs.outputFile(options.out, data.sitemap, function(err) {
                     if (err) vow.breek(err);
-                    else vow.keep(data);
+                    else fs.outputFile('sitemap.html', data.html, function(err) {
+                        if (err) vow.breek(err);
+                        else vow.keep(data);
+                    });
                 });
 
             }
@@ -298,7 +314,10 @@ var c = module.exports({ verbose: true,
 
 c('http://localhost:9000').when(
     function(data) {
-        console.log('RESULT:\n', data);
+        
+        console.log('SITEMAP:\n', data.sitemap);
+        console.log('HTML:\n', data.html);
+        console.log('LIST:\n', data.list);
     }
     ,function(err) {
         console.log('ERROR', err);

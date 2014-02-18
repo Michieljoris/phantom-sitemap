@@ -39,3 +39,6 @@ Set options.sitemap to false to return just a list of links.
 Using node-crawler to crawl static pages.	
 
 
+TODO: create html map
+
+
